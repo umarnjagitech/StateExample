@@ -20,9 +20,13 @@ import com.example.stateexample.ui.theme.StateExampleTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Column
+//import androidx.compose.foundation.layout.FlowRowScopeInstance.align
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.unit.dp
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,19 +44,24 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun DemoScreen () {
-    MyTextField()
+
+    var textState by rememberSaveable { mutableStateOf("") }
+
+    val onTextChange = {
+        text: String -> textState = text
+    }
+
+    MyTextField(
+        text = textState,
+        onTextChange = onTextChange
+    )
 }
 
 @Composable
-fun MyTextField(){
-    var textState by remember { mutableStateOf("") }
-
-    val onTextChange = {
-        text : String -> textState = text
-    }
+fun MyTextField(text: String, onTextChange: (String) -> Unit){
 
     TextField(
-        value = textState,
+        value = text,
         onValueChange = onTextChange
     )
 }
@@ -61,8 +70,14 @@ fun MyTextField(){
 @Composable
 fun GreetingPreview(){
     StateExampleTheme {
-        DemoScreen()
-        FunctionA()
+        Column {
+            //Spacer(modifier = Modifier.height(12.dp))
+            SlotDemo (
+                topContent = { DemoScreen() },
+                middleContent = { FunctionA() },
+                bottomContent = { ButtonDemo() }
+            )
+        }
     }
 }
 
@@ -90,4 +105,24 @@ fun FunctionB(
         checked = switchState,
         onCheckedChange = onSwitchChange
     )
+}
+
+@Composable
+fun SlotDemo(
+    topContent: @Composable () -> Unit,
+    middleContent: @Composable () -> Unit,
+    bottomContent: @Composable () -> Unit
+) {
+    Column {
+        topContent()
+        middleContent()
+        bottomContent()
+    }
+}
+
+@Composable
+fun ButtonDemo() {
+    Button(onClick = { }) {
+        Text("Finya Hii Kitu!")
+    }
 }
