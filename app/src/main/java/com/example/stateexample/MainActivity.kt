@@ -20,9 +20,14 @@ import com.example.stateexample.ui.theme.StateExampleTheme
 import androidx.compose.material3.*
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 //import androidx.compose.foundation.layout.FlowRowScopeInstance.align
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -66,7 +71,7 @@ fun MyTextField(text: String, onTextChange: (String) -> Unit){
     )
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview(){
     StateExampleTheme {
@@ -77,6 +82,8 @@ fun GreetingPreview(){
                 middleContent = { FunctionA() },
                 bottomContent = { ButtonDemo() }
             )
+            ListDemo()
+            ListScrollDemo()
         }
     }
 }
@@ -124,5 +131,27 @@ fun SlotDemo(
 fun ButtonDemo() {
     Button(onClick = { }) {
         Text("Finya Hii Kitu!")
+    }
+}
+
+@Composable
+fun ListDemo() {
+    val colorNamesList = listOf("Red", "Green", "Blue", "Indigo")
+
+    LazyColumn {
+        itemsIndexed(colorNamesList) { index, item ->
+            Text("$index = $item")
+        }
+    }
+}
+
+@Composable
+fun ListScrollDemo() {
+    val scrollState = rememberScrollState()
+
+    Column (Modifier.verticalScroll(scrollState)) {
+        repeat(10) {
+            FunctionA()
+        }
     }
 }
